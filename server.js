@@ -10,8 +10,9 @@ const {
 
 const utils = require("./utils");
 const net = new brain.NeuralNetwork();
-
-net.train(normalize(data));
+const options = {
+  log: process.env.NODE_ENV === "dev",
+}
 
 const {
   comms,
@@ -20,9 +21,22 @@ const {
 } = calculateMinAndMax(data);
 
 const sample = {
-  c: utils.normalize(1, comms.min, comms.max),
-  l: utils.normalize(30, likes.min, likes.max),
-  v: utils.normalize(5000, views.min, views.max),
+  c: utils.normalize(10, comms.min, comms.max),
+  l: utils.normalize(40, likes.min, likes.max),
+  v: utils.normalize(1000, views.min, views.max),
 }
 
-console.log(net.run(sample));
+normalize(data)
+  .then((normalizedData) => {
+    net.train(normalizedData, options);
+    return normalizedData;
+  })
+  .then((normalizedData) => {
+    console.log(net.run(sample));
+    console.log(normalizedData.map(item => item.output.d));
+    Promise.resolve();
+  })
+  .catch((err) => {
+    console.log(err);
+    Promise.reject();
+  })

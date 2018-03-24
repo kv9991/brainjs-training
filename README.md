@@ -4,3 +4,7 @@
 
 Для запуска:
 - node server.js
+
+## TODO
+- Сделать зависимость от даты публикации (datetime rate)
+- Распределить normalization.js по отдельным пакетам (minmax, median, getweight)
